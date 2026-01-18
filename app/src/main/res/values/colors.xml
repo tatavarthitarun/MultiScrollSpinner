@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="spinner_background">#FFFFFFFF</color>
+    <color name="spinner_border">#BDBDBD</color>
+    <color name="spinner_border_focused">#6200EE</color>
+    <color name="spinner_text_hint">#9E9E9E</color>
+    <color name="spinner_item_selected">#E3F2FD</color>
+    <color name="spinner_divider">#E0E0E0</color>
+</resources>

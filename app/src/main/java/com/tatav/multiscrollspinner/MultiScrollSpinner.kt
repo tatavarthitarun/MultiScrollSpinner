@@ -9,13 +9,32 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 
+/**
+ * A custom spinner widget that supports both horizontal scrolling for long item text
+ * and vertical scrolling for multiple items.
+ *
+ * Features:
+ * - Horizontal scrolling within each dropdown item for long text
+ * - Vertical scrolling for lists with many items
+ * - Material Design styling
+ * - Easy to integrate and customize
+ *
+ * @property items The list of items to display in the spinner
+ * @property selectedPosition The currently selected item position (-1 if none)
+ * @property onItemSelectedListener Callback invoked when an item is selected
+ */
 class MultiScrollSpinner @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val ARROW_ANIMATION_DURATION_MS = 200L
+        private const val ARROW_EXPANDED_DEGREES = 180f
+        private const val ARROW_COLLAPSED_DEGREES = 0f
+    }
 
     private var items: List<String> = emptyList()
     private var selectedPosition: Int = -1
@@ -37,31 +56,27 @@ class MultiScrollSpinner @JvmOverloads constructor(
         selectedTextScrollView = view.findViewById(R.id.selectedTextScrollView)
         dropdownArrow = view.findViewById(R.id.dropdownArrow)
 
-        // Make the entire view clickable
         isClickable = true
         isFocusable = true
-        setOnClickListener {
-            toggleDropdown()
-        }
-        
-        // Also set click listener on the child view to ensure clicks are captured
-        view.setOnClickListener {
-            toggleDropdown()
-        }
+        setOnClickListener { toggleDropdown() }
+        view.setOnClickListener { toggleDropdown() }
     }
 
+    /**
+     * Sets the list of items to display in the spinner.
+     *
+     * @param items The list of string items to display
+     */
     fun setItems(items: List<String>) {
         this.items = items
-        if (items.isNotEmpty() && selectedPosition == -1) {
-            // Don't auto-select, just show hint
-            updateSelectedText()
-        } else if (selectedPosition >= 0 && selectedPosition < items.size) {
-            updateSelectedText()
-        } else {
-            updateSelectedText()
-        }
+        updateSelectedText()
     }
 
+    /**
+     * Programmatically selects an item at the given position.
+     *
+     * @param position The position of the item to select (0-based index)
+     */
     fun setSelection(position: Int) {
         if (position >= 0 && position < items.size) {
             selectedPosition = position
@@ -70,8 +85,18 @@ class MultiScrollSpinner @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Gets the currently selected item position.
+     *
+     * @return The selected position, or -1 if no item is selected
+     */
     fun getSelectedPosition(): Int = selectedPosition
 
+    /**
+     * Gets the currently selected item.
+     *
+     * @return The selected item string, or null if no item is selected
+     */
     fun getSelectedItem(): String? {
         return if (selectedPosition >= 0 && selectedPosition < items.size) {
             items[selectedPosition]
@@ -80,6 +105,11 @@ class MultiScrollSpinner @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Sets a listener to be invoked when an item is selected.
+     *
+     * @param listener A callback that receives the position and item string
+     */
     fun setOnItemSelectedListener(listener: (Int, String) -> Unit) {
         this.onItemSelectedListener = listener
     }
@@ -87,7 +117,6 @@ class MultiScrollSpinner @JvmOverloads constructor(
     private fun updateSelectedText() {
         if (selectedPosition >= 0 && selectedPosition < items.size) {
             selectedText?.text = items[selectedPosition]
-            // Reset scroll position when text changes
             selectedTextScrollView?.post {
                 selectedTextScrollView?.scrollTo(0, 0)
             }
@@ -95,25 +124,17 @@ class MultiScrollSpinner @JvmOverloads constructor(
     }
 
     private fun toggleDropdown() {
-        android.util.Log.d("MultiScrollSpinner", "toggleDropdown called, items.size=${items.size}")
-        if (items.isEmpty()) {
-            android.util.Log.w("MultiScrollSpinner", "Items list is empty!")
-            return
-        }
+        if (items.isEmpty()) return
 
         if (popup?.isShowing() == true) {
-            android.util.Log.d("MultiScrollSpinner", "Dismissing dropdown")
             dismissDropdown()
         } else {
-            android.util.Log.d("MultiScrollSpinner", "Showing dropdown")
             showDropdown()
         }
     }
 
     private fun showDropdown() {
-        if (items.isEmpty()) {
-            return
-        }
+        if (items.isEmpty()) return
 
         popup = MultiScrollSpinnerPopup(
             context,
@@ -140,18 +161,15 @@ class MultiScrollSpinner @JvmOverloads constructor(
 
     private fun animateArrow(expanded: Boolean) {
         dropdownArrow?.let { arrow ->
-            val fromDegrees = if (expanded) 0f else 180f
-            val toDegrees = if (expanded) 180f else 0f
-            
             val rotateAnimation = RotateAnimation(
-                fromDegrees,
-                toDegrees,
+                if (expanded) ARROW_COLLAPSED_DEGREES else ARROW_EXPANDED_DEGREES,
+                if (expanded) ARROW_EXPANDED_DEGREES else ARROW_COLLAPSED_DEGREES,
                 RotateAnimation.RELATIVE_TO_SELF,
                 0.5f,
                 RotateAnimation.RELATIVE_TO_SELF,
                 0.5f
             ).apply {
-                duration = 200
+                duration = ARROW_ANIMATION_DURATION_MS
                 fillAfter = true
             }
             

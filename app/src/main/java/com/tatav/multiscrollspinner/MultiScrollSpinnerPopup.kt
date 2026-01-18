@@ -10,6 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * Manages the popup window that displays the spinner dropdown list.
+ *
+ * Handles popup creation, positioning, sizing, and dismissal.
+ */
 class MultiScrollSpinnerPopup(
     private val context: Context,
     private val items: List<String>,
@@ -17,116 +22,152 @@ class MultiScrollSpinnerPopup(
     private val onItemSelected: (Int, String) -> Unit,
     private val onDismiss: () -> Unit
 ) {
+    companion object {
+        private const val MAX_HEIGHT_SCREEN_PERCENT = 0.6f
+        private const val MAX_HEIGHT_DP = 400
+        private const val ITEM_HEIGHT_DP = 48
+        private const val POPUP_PADDING_DP = 16
+        private const val POPUP_ELEVATION = 8f
+    }
+
     private var popupWindow: PopupWindow? = null
     private var adapter: MultiScrollSpinnerAdapter? = null
 
+    /**
+     * Shows the popup dropdown below the anchor view.
+     *
+     * @param anchorView The view to anchor the popup to
+     */
     fun show(anchorView: View) {
-        // Ensure anchor view is measured
+        ensureAnchorMeasured(anchorView)
+        
+        val popupView = LayoutInflater.from(context)
+            .inflate(R.layout.popup_multiscroll_spinner, null)
+        
+        val recyclerView: RecyclerView = popupView.findViewById(R.id.recyclerView)
+        setupRecyclerView(recyclerView)
+        
+        val displayMetrics = context.resources.displayMetrics
+        val popupWidth = getPopupWidth(anchorView, displayMetrics)
+        val popupHeight = calculatePopupHeight(items.size, displayMetrics)
+        
+        setupRecyclerViewHeight(recyclerView, popupHeight)
+        createAndShowPopup(popupView, anchorView, popupWidth, popupHeight)
+    }
+
+    /**
+     * Dismisses the popup if it's currently showing.
+     */
+    fun dismiss() {
+        popupWindow?.dismiss()
+        popupWindow = null
+        adapter = null
+    }
+
+    /**
+     * Checks if the popup is currently showing.
+     *
+     * @return true if the popup is showing, false otherwise
+     */
+    fun isShowing(): Boolean = popupWindow?.isShowing == true
+
+    private fun ensureAnchorMeasured(anchorView: View) {
         if (anchorView.width == 0 || anchorView.height == 0) {
             anchorView.measure(
                 View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             )
         }
-        
-        val inflater = LayoutInflater.from(context)
-        val popupView = inflater.inflate(R.layout.popup_multiscroll_spinner, null)
-        
-        val recyclerView: RecyclerView = popupView.findViewById(R.id.recyclerView)
+    }
+
+    private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(context)
-        
-        // Ensure RecyclerView doesn't block item clicks
         recyclerView.isNestedScrollingEnabled = true
         
         adapter = MultiScrollSpinnerAdapter(items, selectedPosition) { position, item ->
-            android.util.Log.d("MultiScrollSpinnerPopup", "Item selected callback: position=$position, item=$item")
             onItemSelected(position, item)
             dismiss()
         }
         recyclerView.adapter = adapter
+    }
 
-        // Calculate max height (60% of screen height or 400dp, whichever is smaller)
-        val displayMetrics = context.resources.displayMetrics
-        val maxHeight = (displayMetrics.heightPixels * 0.6).toInt().coerceAtMost(
-            (400 * displayMetrics.density).toInt()
+    private fun calculatePopupHeight(itemCount: Int, displayMetrics: android.util.DisplayMetrics): Int {
+        val maxHeight = (displayMetrics.heightPixels * MAX_HEIGHT_SCREEN_PERCENT).toInt().coerceAtMost(
+            (MAX_HEIGHT_DP * displayMetrics.density).toInt()
         )
         
-        // Calculate approximate height based on item count
-        // Each item is approximately 48dp (minHeight) + padding
-        val itemHeight = (48 * displayMetrics.density).toInt()
-        val padding = (16 * displayMetrics.density).toInt() // top + bottom padding
-        val calculatedHeight = (items.size * itemHeight + padding).coerceAtMost(maxHeight).coerceAtLeast(itemHeight)
+        val itemHeight = (ITEM_HEIGHT_DP * displayMetrics.density).toInt()
+        val padding = (POPUP_PADDING_DP * displayMetrics.density).toInt()
+        val calculatedHeight = (itemCount * itemHeight + padding).coerceAtMost(maxHeight)
         
-        // Set a fixed height for RecyclerView to ensure it renders
-        val layoutParams = recyclerView.layoutParams ?: ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            calculatedHeight
-        )
-        layoutParams.height = calculatedHeight
-        recyclerView.layoutParams = layoutParams
+        return calculatedHeight.coerceAtLeast(itemHeight)
+    }
 
-        // Get anchor width, use screen width as fallback
-        val popupWidth = if (anchorView.width > 0) {
+    private fun getPopupWidth(anchorView: View, displayMetrics: android.util.DisplayMetrics): Int {
+        return if (anchorView.width > 0) {
             anchorView.width
         } else {
             displayMetrics.widthPixels
         }
+    }
 
-        // Create popup window
+    private fun setupRecyclerViewHeight(recyclerView: RecyclerView, height: Int) {
+        val layoutParams = recyclerView.layoutParams ?: ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            height
+        )
+        layoutParams.height = height
+        recyclerView.layoutParams = layoutParams
+    }
+
+    private fun createAndShowPopup(
+        popupView: View,
+        anchorView: View,
+        width: Int,
+        height: Int
+    ) {
         popupWindow = PopupWindow(
             popupView,
-            popupWidth,
-            calculatedHeight,
+            width,
+            height,
             true
         ).apply {
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context, android.R.color.white)))
-            elevation = 8f
+            setBackgroundDrawable(
+                ColorDrawable(ContextCompat.getColor(context, android.R.color.white))
+            )
+            elevation = POPUP_ELEVATION
             isOutsideTouchable = true
             isFocusable = true
-            
-            setOnDismissListener {
-                onDismiss()
-            }
+            setOnDismissListener { onDismiss() }
         }
 
-        // Show popup below anchor view
-        android.util.Log.d("MultiScrollSpinnerPopup", "Attempting to show popup, isAttached=${anchorView.isAttachedToWindow}, width=$popupWidth, height=$calculatedHeight, items=${items.size}")
-        
+        showPopupSafely(anchorView)
+    }
+
+    private fun showPopupSafely(anchorView: View) {
         if (anchorView.isAttachedToWindow) {
             try {
                 popupWindow?.showAsDropDown(anchorView, 0, 0)
-                android.util.Log.d("MultiScrollSpinnerPopup", "Popup shown successfully, isShowing=${popupWindow?.isShowing}")
             } catch (e: Exception) {
-                android.util.Log.e("MultiScrollSpinnerPopup", "Error showing popup", e)
-                // Try with post as fallback
+                // Fallback: try showing after view is laid out
                 anchorView.post {
                     try {
                         popupWindow?.showAsDropDown(anchorView, 0, 0)
-                        android.util.Log.d("MultiScrollSpinnerPopup", "Popup shown via post, isShowing=${popupWindow?.isShowing}")
                     } catch (e2: Exception) {
-                        android.util.Log.e("MultiScrollSpinnerPopup", "Error showing popup via post", e2)
+                        // Silently fail if popup cannot be shown
                     }
                 }
             }
         } else {
-            android.util.Log.w("MultiScrollSpinnerPopup", "Anchor view not attached, using post")
             anchorView.post {
                 if (anchorView.isAttachedToWindow) {
                     try {
                         popupWindow?.showAsDropDown(anchorView, 0, 0)
-                        android.util.Log.d("MultiScrollSpinnerPopup", "Popup shown via post, isShowing=${popupWindow?.isShowing}")
                     } catch (e: Exception) {
-                        android.util.Log.e("MultiScrollSpinnerPopup", "Error showing popup via post", e)
+                        // Silently fail if popup cannot be shown
                     }
                 }
             }
         }
     }
-
-    fun dismiss() {
-        popupWindow?.dismiss()
-        popupWindow = null
-    }
-
-    fun isShowing(): Boolean = popupWindow?.isShowing == true
 }

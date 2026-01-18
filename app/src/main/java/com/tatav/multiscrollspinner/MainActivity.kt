@@ -7,21 +7,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
+/**
+ * Demo activity showcasing the MultiScrollSpinner widget.
+ */
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Setup MultiScrollSpinner with sample data
+        setupSpinner()
+    }
+
+    private fun setupSpinner() {
         val spinner = findViewById<MultiScrollSpinner>(R.id.multiScrollSpinner)
         
-        // Create sample items with varying lengths to demonstrate scrolling
         val items = listOf(
             "Short",
             "Medium length item",
@@ -45,11 +51,8 @@ class MainActivity : AppCompatActivity() {
             "Item 20 - Last item"
         )
         
-        android.util.Log.d("MainActivity", "Setting up spinner with ${items.size} items")
         spinner.setItems(items)
-        android.util.Log.d("MainActivity", "Spinner items set, selected position: ${spinner.getSelectedPosition()}")
         spinner.setOnItemSelectedListener { position, item ->
-            android.util.Log.d("MainActivity", "Item selected: $item at position $position")
             Toast.makeText(
                 this,
                 "Selected: $item (Position: $position)",

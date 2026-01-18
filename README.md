@@ -300,26 +300,6 @@ spinner.setItems(newItems)
 spinner.setItems(emptyList()) // Empty list
 ```
 
-## Troubleshooting
-
-### "Failed to resolve" Error
-
-1. **Verify JitPack repository** is added to `settings.gradle.kts`:
-   ```kotlin
-   maven { url = uri("https://jitpack.io") }
-   ```
-
-2. **Check version tag** exists on GitHub:
-   - Visit: `https://github.com/tatavarthitarun/MultiScrollSpinner/tags`
-   - Ensure the version tag (e.g., `v0.0.3`) is visible
-
-3. **Trigger JitPack build**:
-   - Visit: `https://jitpack.io/#tatavarthitarun/MultiScrollSpinner`
-   - Click on the version to trigger a build
-   - Wait for build to complete (first build: 5-10 minutes)
-
-4. **Sync Gradle** in Android Studio after adding the dependency
-
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).

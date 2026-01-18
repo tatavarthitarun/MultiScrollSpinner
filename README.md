@@ -10,8 +10,9 @@ A custom Android spinner (dropdown list) widget that supports both horizontal sc
 - ✅ **Vertical Scrolling**: The dropdown list scrolls vertically when there are many items
 - ✅ **Material Design**: Follows Android Material Design guidelines
 - ✅ **Easy Integration**: Simple API for quick implementation
-- ✅ **Customizable**: Easy to customize appearance and behavior
+- ✅ **Highly Customizable**: Extensive customization options via XML attributes or programmatically
 - ✅ **Performance Optimized**: Uses RecyclerView for efficient rendering of large lists
+- ✅ **Toast Support**: Built-in option to show/hide toast messages on item selection
 
 ## Requirements
 
@@ -39,76 +40,13 @@ Then add the dependency in your app's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.tatavarthitarun:MultiScrollSpinner:v0.0.1")
+    implementation("com.github.tatavarthitarun:MultiScrollSpinner:v0.0.3")
 }
 ```
 
-**Important:** 
-- Make sure you have created and pushed a Git tag (e.g., `v0.0.1`) to GitHub
-- JitPack needs to build the library first - visit https://jitpack.io/#tatavarthitarun/MultiScrollSpinner to trigger the build
-- Replace `tatavarthitarun` with your GitHub username
-- Replace `v0.0.1` with the release tag you want to use
+## Quick Start
 
-**Troubleshooting "Failed to resolve" error:**
-
-1. **If tag doesn't exist, create and push it:**
-   ```bash
-   git tag -a v0.0.1 -m "Release v0.0.1"
-   git push origin v0.0.1
-   ```
-
-   **If tag already exists locally:**
-   ```bash
-   # Just push the existing tag
-   git push origin v0.0.1
-   
-   # Or if you need to update it:
-   git tag -d v0.0.1                    # Delete local tag
-   git push origin :refs/tags/v0.0.1   # Delete remote tag
-   git tag -a v0.0.1 -m "Release v0.0.1"  # Create new tag
-   git push origin v0.0.1              # Push new tag
-   ```
-
-2. **Verify tag exists on GitHub:**
-   Visit: `https://github.com/tatavarthitarun/MultiScrollSpinner/tags`
-   The tag `v0.0.1` should be visible
-
-3. **Trigger JitPack build:**
-   - Visit: `https://jitpack.io/#tatavarthitarun/MultiScrollSpinner`
-   - Click "Get it" or "Look up" next to `v0.0.1`
-   - Wait for build to complete (first build: 5-10 minutes)
-   - Look for green checkmark ✓ when build succeeds
-
-4. **Verify JitPack repository in your sample project:**
-   Make sure `settings.gradle.kts` has:
-   ```kotlin
-   maven { url = uri("https://jitpack.io") }
-   ```
-
-5. **If build fails on JitPack:**
-   - **Check the build log:** Click on the version on JitPack website to see detailed error
-   - **Try removing jitpack.yml:** Delete the file, commit, and recreate the tag - JitPack auto-detection often works better
-   - **Common fixes:**
-     - Ensure Gradle wrapper version in `gradle-wrapper.properties` is compatible (currently 8.13)
-     - Verify `:library` module is correctly configured
-     - Check that all dependencies in `libs.versions.toml` are valid
-     - Make sure repository is public (JitPack only works with public repos)
-
-6. **Alternative: Use commit SHA for testing:**
-   ```kotlin
-   // Get commit SHA: git rev-parse HEAD
-   implementation("com.github.tatavarthitarun:MultiScrollSpinner:COMMIT_SHA")
-   ```
-
-6. **Check repository visibility:**
-   - Repository must be **public** on GitHub
-   - Private repos require JitPack Pro
-
-## Usage
-
-### Basic Setup
-
-1. **Add to your layout XML:**
+### 1. Add to Layout XML
 
 ```xml
 <com.tatav.multiscrollspinner.MultiScrollSpinner
@@ -117,7 +55,7 @@ dependencies {
     android:layout_height="wrap_content" />
 ```
 
-2. **Initialize in your Activity/Fragment:**
+### 2. Initialize in Code
 
 ```kotlin
 val spinner = findViewById<MultiScrollSpinner>(R.id.multiScrollSpinner)
@@ -133,13 +71,50 @@ val items = listOf(
 
 spinner.setItems(items)
 
+// Optional: Enable automatic toast on selection
+spinner.setShowToast(true)
+
 // Set selection listener
 spinner.setOnItemSelectedListener { position, item ->
-    Toast.makeText(this, "Selected: $item", Toast.LENGTH_SHORT).show()
+    // Handle selection
+    Log.d("Spinner", "Selected: $item at position $position")
 }
 ```
 
-### Customization via XML
+## Toast Feature
+
+The library includes a built-in option to automatically show toast messages when an item is selected.
+
+### Enable Toast via XML
+
+```xml
+<com.tatav.multiscrollspinner.MultiScrollSpinner
+    android:id="@+id/multiScrollSpinner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:ms_showToast="true" />
+```
+
+### Enable Toast Programmatically
+
+```kotlin
+// Enable toast
+spinner.setShowToast(true)
+
+// Disable toast
+spinner.setShowToast(false)
+
+// Check if toast is enabled
+val isEnabled = spinner.isShowToastEnabled()
+```
+
+When enabled, selecting an item will automatically show a toast message: **"Selected: [item] (Position: [position])"**
+
+**Note**: The toast feature is disabled by default. You can still use `setOnItemSelectedListener` for custom logic even when toast is enabled.
+
+## Customization
+
+### XML Attributes
 
 You can customize the spinner using XML attributes:
 
@@ -148,24 +123,35 @@ You can customize the spinner using XML attributes:
     android:id="@+id/multiScrollSpinner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    
+    <!-- Dropdown Arrow -->
     app:ms_dropdownArrow="@drawable/custom_arrow"
     app:ms_arrowTint="#6200EE"
+    app:ms_arrowWidth="24dp"
+    app:ms_arrowHeight="24dp"
+    
+    <!-- Selected Text -->
     app:ms_textSize="18sp"
     app:ms_textColor="#000000"
     app:ms_hintText="Choose an option"
     app:ms_hintTextColor="#9E9E9E"
+    
+    <!-- Dropdown Items -->
     app:ms_itemTextSize="16sp"
     app:ms_itemTextColor="#424242"
     app:ms_selectedItemBackground="#E3F2FD"
     app:ms_selectedItemTextColor="#1976D2"
     app:ms_itemHeight="56dp"
+    
+    <!-- Popup -->
     app:ms_maxDropdownHeight="300dp"
-    app:ms_popupBackground="#FFFFFF" />
+    app:ms_popupBackground="#FFFFFF"
+    
+    <!-- Toast -->
+    app:ms_showToast="true" />
 ```
 
-### Customization via Code
-
-You can also customize programmatically:
+### Programmatic Customization
 
 ```kotlin
 val spinner = findViewById<MultiScrollSpinner>(R.id.multiScrollSpinner)
@@ -190,29 +176,78 @@ spinner.setItemHeight(56) // in dp
 // Popup customization
 spinner.setMaxDropdownHeight(400) // in dp
 spinner.setPopupBackground(Color.WHITE)
+
+// Toast customization
+spinner.setShowToast(true)
 ```
 
-### Advanced Usage
-
-#### Programmatically Set Selection
+## Complete Example
 
 ```kotlin
-// Select item at position 2
-spinner.setSelection(2)
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-// Get selected item
-val selectedItem = spinner.getSelectedItem()
-val selectedPosition = spinner.getSelectedPosition()
+        val spinner = findViewById<MultiScrollSpinner>(R.id.multiScrollSpinner)
+        
+        val items = listOf(
+            "Option 1",
+            "Option 2 with longer text",
+            "This is an extremely long option that demonstrates horizontal scrolling capability",
+            "Option 4",
+            "Option 5",
+            // ... more items
+        )
+        
+        spinner.setItems(items)
+        
+        // Enable automatic toast
+        spinner.setShowToast(true)
+        
+        // Optional: Custom listener for additional logic
+        spinner.setOnItemSelectedListener { position, item ->
+            Log.d("Spinner", "Selected: $item at position $position")
+            // Your custom logic here
+        }
+        
+        // Optionally set initial selection
+        spinner.setSelection(0)
+    }
+}
 ```
 
-#### Handle Empty State
+## API Reference
 
-```kotlin
-// The spinner will show "Select an item" when no item is selected
-spinner.setItems(emptyList()) // Empty list
-```
+### Main Methods
 
-## Customization Attributes
+| Method | Description |
+|--------|-------------|
+| `setItems(items: List<String>)` | Sets the list of items to display |
+| `setSelection(position: Int)` | Programmatically select an item at the given position |
+| `getSelectedPosition(): Int` | Returns the currently selected position (-1 if none) |
+| `getSelectedItem(): String?` | Returns the currently selected item (null if none) |
+| `setOnItemSelectedListener(listener: (Int, String) -> Unit)` | Sets a callback for when an item is selected |
+| `setShowToast(show: Boolean)` | Enable/disable automatic toast on item selection |
+| `isShowToastEnabled(): Boolean` | Check if toast is enabled |
+
+### Customization Methods
+
+| Method | Description |
+|--------|-------------|
+| `setDropdownArrow(drawableRes: Int)` | Set dropdown arrow drawable resource |
+| `setArrowTint(color: Int)` | Set arrow tint color |
+| `setTextSize(size: Float)` | Set selected text size (in sp) |
+| `setTextColor(color: Int)` | Set selected text color |
+| `setHintText(hint: String)` | Set hint text |
+| `setHintTextColor(color: Int)` | Set hint text color |
+| `setItemTextSize(size: Float)` | Set item text size (in sp) |
+| `setItemTextColor(color: Int)` | Set item text color |
+| `setSelectedItemBackground(color: Int)` | Set selected item background color |
+| `setSelectedItemTextColor(color: Int)` | Set selected item text color |
+| `setItemHeight(height: Int)` | Set item height (in dp) |
+| `setMaxDropdownHeight(height: Int)` | Set max dropdown height (in dp) |
+| `setPopupBackground(background: Int)` | Set popup background color |
 
 ### XML Attributes Reference
 
@@ -233,178 +268,57 @@ spinner.setItems(emptyList()) // Empty list
 | `ms_itemHeight` | dimension | Height of each dropdown item | 48dp |
 | `ms_maxDropdownHeight` | dimension | Maximum height of dropdown | 60% screen or 400dp |
 | `ms_popupBackground` | reference/color | Background for popup | `@android:color/white` |
+| `ms_showToast` | boolean | Enable/disable automatic toast on selection | `false` |
 
-### Programmatic Customization Methods
+## Advanced Usage
 
-| Method | Description |
-|--------|-------------|
-| `setDropdownArrow(drawableRes: Int)` | Set dropdown arrow drawable resource |
-| `setDropdownArrow(drawable: Drawable?)` | Set dropdown arrow drawable |
-| `setArrowTint(color: Int)` | Set arrow tint color |
-| `setTextSize(size: Float)` | Set selected text size (in sp) |
-| `setTextColor(color: Int)` | Set selected text color |
-| `setHintText(hint: String)` | Set hint text |
-| `setHintTextColor(color: Int)` | Set hint text color |
-| `setItemTextSize(size: Float)` | Set item text size (in sp) |
-| `setItemTextColor(color: Int)` | Set item text color |
-| `setSelectedItemBackground(color: Int)` | Set selected item background color |
-| `setSelectedItemTextColor(color: Int)` | Set selected item text color |
-| `setItemHeight(height: Int)` | Set item height (in dp) |
-| `setMaxDropdownHeight(height: Int)` | Set max dropdown height (in dp) |
-| `setPopupBackground(background: Int)` | Set popup background |
-
-## API Reference
-
-### MultiScrollSpinner
-
-#### Methods
-
-| Method | Description |
-|--------|-------------|
-| `setItems(items: List<String>)` | Sets the list of items to display |
-| `setSelection(position: Int)` | Programmatically select an item at the given position |
-| `getSelectedPosition(): Int` | Returns the currently selected position (-1 if none) |
-| `getSelectedItem(): String?` | Returns the currently selected item (null if none) |
-| `setOnItemSelectedListener(listener: (Int, String) -> Unit)` | Sets a callback for when an item is selected |
-
-### Example: Complete Implementation
+### Programmatically Set Selection
 
 ```kotlin
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+// Select item at position 2
+spinner.setSelection(2)
 
-        val spinner = findViewById<MultiScrollSpinner>(R.id.multiScrollSpinner)
-        
-        val items = listOf(
-            "Option 1",
-            "Option 2 with longer text",
-            "This is an extremely long option that demonstrates horizontal scrolling capability",
-            "Option 4",
-            // ... more items
-        )
-        
-        spinner.setItems(items)
-        
-        spinner.setOnItemSelectedListener { position, item ->
-            Log.d("Spinner", "Selected: $item at position $position")
-            // Handle selection
-        }
-        
-        // Optionally set initial selection
-        spinner.setSelection(0)
-    }
-}
+// Get selected item
+val selectedItem = spinner.getSelectedItem()
+val selectedPosition = spinner.getSelectedPosition()
 ```
 
-## Project Structure
+### Dynamic Item Updates
 
-```
-MultiScrollSpinner/
-├── app/
-│   └── src/
-│       └── main/
-│           ├── java/com/tatav/multiscrollspinner/
-│           │   ├── MultiScrollSpinner.kt          # Main spinner widget
-│           │   ├── MultiScrollSpinnerAdapter.kt   # RecyclerView adapter
-│           │   └── MultiScrollSpinnerPopup.kt    # Popup window implementation
-│           └── res/
-│               └── layout/
-│                   ├── layout_multiscroll_spinner.xml  # Main spinner layout
-│                   ├── item_multiscroll_spinner.xml   # Dropdown item layout
-│                   └── popup_multiscroll_spinner.xml   # Popup container layout
-└── README.md
-```
-
-## How It Works
-
-1. **Main Spinner View**: Displays the selected item with horizontal scrolling capability
-2. **Popup Window**: Shows a dropdown list using `PopupWindow` with a `RecyclerView`
-3. **Item Rendering**: Each item uses a `HorizontalScrollView` to enable horizontal scrolling for long text
-4. **Vertical Scrolling**: The `RecyclerView` handles vertical scrolling when there are many items
-5. **Selection Handling**: Click listeners on items trigger selection callbacks and update the main spinner
-
-## Customization
-
-### Modify Item Height
-
-Edit `item_multiscroll_spinner.xml`:
-```xml
-<TextView
-    android:minHeight="48dp"  <!-- Change this value -->
-    ... />
-```
-
-### Modify Dropdown Max Height
-
-Edit `MultiScrollSpinnerPopup.kt`:
 ```kotlin
-val maxHeight = (displayMetrics.heightPixels * 0.6).toInt()  // 60% of screen
+// Update items dynamically
+val newItems = listOf("New Item 1", "New Item 2", "New Item 3")
+spinner.setItems(newItems)
+
+// The selection will be reset when items are updated
 ```
 
-### Change Selected Item Highlight Color
+### Handle Empty State
 
-Edit `MultiScrollSpinnerAdapter.kt`:
 ```kotlin
-holder.itemView.setBackgroundColor(
-    ContextCompat.getColor(holder.itemView.context, android.R.color.holo_blue_light)
-)
+// The spinner will show hint text when no item is selected
+spinner.setItems(emptyList()) // Empty list
 ```
 
-## Screenshots
+## Troubleshooting
 
-*Add screenshots of your spinner in action here*
+### "Failed to resolve" Error
 
-## Publishing to JitPack
-
-To publish a new version of the library to JitPack:
-
-1. **Update the version** in `library/build.gradle.kts`:
+1. **Verify JitPack repository** is added to `settings.gradle.kts`:
    ```kotlin
-   version = "1.0.0"  // Update this
+   maven { url = uri("https://jitpack.io") }
    ```
 
-2. **Create a Git tag** for the version:
-   ```bash
-   git tag -a v1.0.0 -m "Release version 1.0.0"
-   git push origin v1.0.0
-   ```
+2. **Check version tag** exists on GitHub:
+   - Visit: `https://github.com/tatavarthitarun/MultiScrollSpinner/tags`
+   - Ensure the version tag (e.g., `v0.0.3`) is visible
 
-3. **Or create a GitHub Release**:
-   - Go to your repository on GitHub
-   - Click "Releases" → "Create a new release"
-   - Choose a tag (create new tag like `v1.0.0`)
-   - Add release notes
-   - Click "Publish release"
+3. **Trigger JitPack build**:
+   - Visit: `https://jitpack.io/#tatavarthitarun/MultiScrollSpinner`
+   - Click on the version to trigger a build
+   - Wait for build to complete (first build: 5-10 minutes)
 
-4. **JitPack will automatically build** your library when:
-   - A new tag is pushed
-   - A new release is created
-   - You visit https://jitpack.io/#YourUsername/MultiScrollSpinner
-
-5. **Users can then use**:
-   ```kotlin
-   implementation("com.github.YourUsername:MultiScrollSpinner:v1.0.0")
-   ```
-
-**Important Notes:**
-- Replace `YourUsername` with your actual GitHub username in:
-  - `library/build.gradle.kts` (groupId)
-  - `jitpack.yml` (if needed)
-  - README examples
-- The first build on JitPack may take 5-10 minutes. Subsequent builds are usually faster.
-- See [PUBLISHING.md](PUBLISHING.md) for detailed publishing instructions.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+4. **Sync Gradle** in Android Studio after adding the dependency
 
 ## License
 
@@ -414,14 +328,10 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Tatavarthi Tarun**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@tatavarthitarun](https://github.com/tatavarthitarun)
 
 ## Acknowledgments
 
 - Built with Android Material Design components
 - Uses RecyclerView for efficient list rendering
 - Inspired by the need for a spinner that handles both horizontal and vertical scrolling
-
----
-
-**Note**: This is a custom implementation. For production use, consider adding more customization options, accessibility features, and comprehensive testing.

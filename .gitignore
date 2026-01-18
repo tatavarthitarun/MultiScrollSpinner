@@ -19,6 +19,10 @@ release/
 # Gradle files
 .gradle/
 build/
+.gradle
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -35,23 +39,26 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# IntelliJ
+# IntelliJ IDEA / Android Studio
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries
-.idea/jarRepositories.xml
-.idea/caches
-.idea/modules.xml
-.idea/navEditor.xml
-# Android Studio 3 in .gitignore file.
-.idea/caches
-.idea/modules.xml
-# Comment next line if keeping position of elements in Navigation Editor is relevant for you
-.idea/navEditor.xml
+.idea/
+.idea_modules/
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
 
 # Keystore files
 *.jks
@@ -99,10 +106,83 @@ ehthumbs.db
 Thumbs.db
 
 # Backup files
-*~
-*.swp
 *.bak
+*.swp
+*.tmp
+*.temp
+
+# Build artifacts
+*.ap_
+*.dex
+*.class
+build/
+.gradle/
+local.properties
+proguard/
+*.iml
+.idea/
+.externalNativeBuild/
+.cxx/
+*.hprof
+
+# Module-specific build directories
+app/build/
+library/build/
+app/.cxx/
+library/.cxx/
+
+# Gradle cache
+.gradle/
+gradle-app.setting
+
+# Android Studio
+.idea/
+*.iml
+local.properties
+.navigation/
+captures/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
 
 # Temporary files
 *.tmp
 *.temp
+*.swp
+*.swo
+*~
+
+# Test coverage
+.nyc_output/
+coverage/
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release

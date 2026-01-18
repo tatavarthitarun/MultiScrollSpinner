@@ -61,7 +61,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 from(components["release"])
                 
-                groupId = "com.github.tatav"
+                groupId = "com.github.tatavarthitarun"
                 artifactId = "MultiScrollSpinner"
                 version = "0.0.1"
                 

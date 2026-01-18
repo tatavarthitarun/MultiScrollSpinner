@@ -22,8 +22,6 @@ A custom Android spinner (dropdown list) widget that supports both horizontal sc
 
 ## Installation
 
-### Option 1: JitPack (Easiest - Recommended)
-
 Add JitPack repository to your project's `settings.gradle.kts` (or `settings.gradle`):
 
 ```kotlin
@@ -41,68 +39,14 @@ Then add the dependency in your app's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.tatavarthitarun:MultiScrollSpinner:1.0.0")
-    // Or use the latest commit:
-    // implementation("com.github.tatavarthitarun:MultiScrollSpinner:main-SNAPSHOT")
+    implementation("com.github.tatavarthitarun:MultiScrollSpinner:v0.0.1")
 }
 ```
 
 **Note:** 
 - Replace `tatavarthitarun` with your GitHub username
-- Replace `1.0.0` with the release tag you want to use (e.g., `v1.0.0` or just `1.0.0`)
+- Replace `v0.0.1` with the release tag you want to use (e.g., `v1.0.0`)
 - You can also use commit SHA or branch name: `main-SNAPSHOT` for latest from main branch
-
-**JitPack Badge:**
-[![JitPack](https://jitpack.io/v/tatavarthitarun/MultiScrollSpinner.svg)](https://jitpack.io/#tatavarthitarun/MultiScrollSpinner)
-
-### Option 2: Use as Library Module
-
-1. **Clone or download the repository:**
-```bash
-git clone https://github.com/yourusername/MultiScrollSpinner.git
-```
-
-2. **Add the library module to your project:**
-
-In your `settings.gradle.kts`:
-```kotlin
-include(":multiscrollspinner")
-project(":multiscrollspinner").projectDir = File("../MultiScrollSpinner/library")
-```
-
-3. **Add dependency in your app's `build.gradle.kts`:**
-```kotlin
-dependencies {
-    implementation(project(":multiscrollspinner"))
-    // Other dependencies...
-}
-```
-
-### Option 3: Copy Source Files
-
-Copy the following files to your project:
-
-- `library/src/main/java/com/tatav/multiscrollspinner/MultiScrollSpinner.kt`
-- `library/src/main/java/com/tatav/multiscrollspinner/MultiScrollSpinnerAdapter.kt`
-- `library/src/main/java/com/tatav/multiscrollspinner/MultiScrollSpinnerPopup.kt`
-- `library/src/main/res/layout/layout_multiscroll_spinner.xml`
-- `library/src/main/res/layout/item_multiscroll_spinner.xml`
-- `library/src/main/res/layout/popup_multiscroll_spinner.xml`
-- `library/src/main/res/values/attrs.xml`
-
-### Dependencies
-
-The library requires the following dependencies (already included if using as module):
-
-```kotlin
-dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-}
-```
 
 ## Usage
 

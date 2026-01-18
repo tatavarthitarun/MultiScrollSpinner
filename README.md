@@ -44,6 +44,107 @@ dependencies {
 }
 ```
 
+### Alternative: Copy Code Directly
+
+If you prefer to copy the code directly into your project instead of using the library dependency:
+
+#### Step 1: Copy Source Files
+
+Copy the following Kotlin files to your project's `src/main/java/` directory (adjust package name as needed):
+
+**Required Kotlin Files:**
+- `MultiScrollSpinner.kt` → `src/main/java/your/package/MultiScrollSpinner.kt`
+- `MultiScrollSpinnerAdapter.kt` → `src/main/java/your/package/MultiScrollSpinnerAdapter.kt`
+- `MultiScrollSpinnerPopup.kt` → `src/main/java/your/package/MultiScrollSpinnerPopup.kt`
+
+**Required Layout Files:**
+- `layout_multiscroll_spinner.xml` → `src/main/res/layout/layout_multiscroll_spinner.xml`
+- `item_multiscroll_spinner.xml` → `src/main/res/layout/item_multiscroll_spinner.xml`
+- `popup_multiscroll_spinner.xml` → `src/main/res/layout/popup_multiscroll_spinner.xml`
+
+**Required Resource File:**
+- `attrs.xml` → `src/main/res/values/attrs.xml` (merge with your existing `attrs.xml` if you have one)
+
+#### Step 2: Update Package Names
+
+Update the package declaration in all three Kotlin files to match your project's package structure:
+
+```kotlin
+// Change from:
+package com.tatav.multiscrollspinner
+
+// To your package:
+package com.yourcompany.yourapp
+```
+
+#### Step 3: Update R Class Imports
+
+In all three Kotlin files, update the R class import:
+
+```kotlin
+// Change from:
+import com.tatav.multiscrollspinner.library.R as LibraryR
+
+// To your R class:
+import com.yourcompany.yourapp.R
+```
+
+Then replace all `LibraryR.` references with `R.`:
+- `LibraryR.styleable.*` → `R.styleable.*`
+- `LibraryR.layout.*` → `R.layout.*`
+- `LibraryR.id.*` → `R.id.*`
+
+#### Step 4: Add Required Dependencies
+
+Add these dependencies to your `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+}
+```
+
+#### Step 5: Update XML Namespace
+
+In your layout XML files where you use `MultiScrollSpinner`, update the namespace:
+
+```xml
+<!-- Change from: -->
+<com.tatav.multiscrollspinner.MultiScrollSpinner
+    ...
+    app:ms_showToast="true" />
+
+<!-- To your package: -->
+<com.yourcompany.yourapp.MultiScrollSpinner
+    ...
+    app:ms_showToast="true" />
+```
+
+#### Step 6: Merge attrs.xml
+
+If you already have an `attrs.xml` file, merge the `MultiScrollSpinner` styleable attributes into it:
+
+```xml
+<resources>
+    <!-- Your existing attributes -->
+    
+    <!-- Add MultiScrollSpinner attributes -->
+    <declare-styleable name="MultiScrollSpinner">
+        <!-- ... all ms_* attributes ... -->
+    </declare-styleable>
+</resources>
+```
+
+#### Step 7: Sync and Build
+
+Sync your project and build. The spinner should now work in your project!
+
+**Note**: When copying code directly, you'll need to manually update the library when new versions are released. Using the JitPack dependency is recommended for easier updates.
+
 ## Quick Start
 
 ### 1. Add to Layout XML

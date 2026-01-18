@@ -63,7 +63,7 @@ afterEvaluate {
                 
                 groupId = "com.github.tatavarthitarun"
                 artifactId = "MultiScrollSpinner"
-                version = "0.0.1"
+                version = "0.0.2"
                 
                 pom {
                     name.set("MultiScrollSpinner")

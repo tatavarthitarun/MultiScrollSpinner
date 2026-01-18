@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MultiScrollSpinner">
+        <!-- Dropdown Arrow Customization -->
+        <attr name="ms_dropdownArrow" format="reference" />
+        <attr name="ms_arrowTint" format="color" />
+        <attr name="ms_arrowWidth" format="dimension" />
+        <attr name="ms_arrowHeight" format="dimension" />
+
+        <!-- Selected Text Customization -->
+        <attr name="ms_textSize" format="dimension" />
+        <attr name="ms_textColor" format="color" />
+        <attr name="ms_hintText" format="string" />
+        <attr name="ms_hintTextColor" format="color" />
+
+        <!-- Dropdown Item Customization -->
+        <attr name="ms_itemTextSize" format="dimension" />
+        <attr name="ms_itemTextColor" format="color" />
+        <attr name="ms_selectedItemBackground" format="color" />
+        <attr name="ms_selectedItemTextColor" format="color" />
+        <attr name="ms_itemHeight" format="dimension" />
+
+        <!-- Popup Customization -->
+        <attr name="ms_maxDropdownHeight" format="dimension" />
+        <attr name="ms_popupBackground" format="reference|color" />
+    </declare-styleable>
+</resources>

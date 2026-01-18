@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "MultiScrollSpinner"
 include(":app")
+include(":library")
  

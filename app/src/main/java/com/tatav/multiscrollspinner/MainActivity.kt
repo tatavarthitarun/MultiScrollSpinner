@@ -53,12 +53,14 @@ class MainActivity : AppCompatActivity() {
         )
         
         spinner.setItems(items)
+        
+        // Enable toast to be shown automatically when item is selected
+        // You can also set this via XML: app:ms_showToast="true"
+        spinner.setShowToast(false)
+        
+        // Optional: You can still use the listener for custom logic
         spinner.setOnItemSelectedListener { position, item ->
-            Toast.makeText(
-                this,
-                "Selected: $item (Position: $position)",
-                Toast.LENGTH_SHORT
-            ).show()
+            // Custom logic here (toast is already shown by the library if enabled)
         }
     }
 }

@@ -23,5 +23,8 @@
         <!-- Popup Customization -->
         <attr name="ms_maxDropdownHeight" format="dimension" />
         <attr name="ms_popupBackground" format="reference|color" />
+
+        <!-- Toast Customization -->
+        <attr name="ms_showToast" format="boolean" />
     </declare-styleable>
 </resources>

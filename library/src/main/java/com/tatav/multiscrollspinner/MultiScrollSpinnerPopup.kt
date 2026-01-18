@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tatav.multiscrollspinner.library.R as LibraryR
 
 /**
  * Manages the popup window that displays the spinner dropdown list.
@@ -44,9 +45,9 @@ class MultiScrollSpinnerPopup(
         ensureAnchorMeasured(anchorView)
         
         val popupView = LayoutInflater.from(context)
-            .inflate(R.layout.popup_multiscroll_spinner, null)
+            .inflate(LibraryR.layout.popup_multiscroll_spinner, null)
         
-        val recyclerView: RecyclerView = popupView.findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = popupView.findViewById(LibraryR.id.recyclerView)
         setupRecyclerView(recyclerView)
         
         val displayMetrics = context.resources.displayMetrics

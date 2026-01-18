@@ -12,7 +12,9 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.tatav.multiscrollspinner.library.R as LibraryR
 
 /**
  * A custom spinner widget that supports both horizontal scrolling for long item text
@@ -39,6 +41,7 @@ import androidx.core.content.ContextCompat
  * - ms_itemHeight: Height of each dropdown item
  * - ms_maxDropdownHeight: Maximum height of dropdown
  * - ms_popupBackground: Background color/drawable for popup
+ * - ms_showToast: Boolean to enable/disable automatic toast on item selection
  */
 class MultiScrollSpinner @JvmOverloads constructor(
     context: Context,
@@ -68,6 +71,7 @@ class MultiScrollSpinner @JvmOverloads constructor(
     private var itemHeight: Int? = null
     private var maxDropdownHeight: Int? = null
     private var popupBackground: Any? = null
+    private var showToast: Boolean = false
 
     private var items: List<String> = emptyList()
     private var selectedPosition: Int = -1
@@ -85,69 +89,72 @@ class MultiScrollSpinner @JvmOverloads constructor(
     private fun initAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray: TypedArray = context.obtainStyledAttributes(
             attrs,
-            R.styleable.MultiScrollSpinner,
+            LibraryR.styleable.MultiScrollSpinner,
             defStyleAttr,
             0
         )
 
         try {
             // Arrow customization
-            dropdownArrowDrawable = typedArray.getDrawable(R.styleable.MultiScrollSpinner_ms_dropdownArrow)
-            arrowTint = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_arrowTint)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_arrowTint, 0)
+            dropdownArrowDrawable = typedArray.getDrawable(LibraryR.styleable.MultiScrollSpinner_ms_dropdownArrow)
+            arrowTint = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_arrowTint)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_arrowTint, 0)
             } else null
             arrowWidth = typedArray.getDimensionPixelSize(
-                R.styleable.MultiScrollSpinner_ms_arrowWidth,
+                LibraryR.styleable.MultiScrollSpinner_ms_arrowWidth,
                 resources.getDimensionPixelSize(android.R.dimen.app_icon_size) / 2
             )
             arrowHeight = typedArray.getDimensionPixelSize(
-                R.styleable.MultiScrollSpinner_ms_arrowHeight,
+                LibraryR.styleable.MultiScrollSpinner_ms_arrowHeight,
                 resources.getDimensionPixelSize(android.R.dimen.app_icon_size) / 2
             )
 
             // Text customization
-            textSize = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_textSize)) {
+            textSize = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_textSize)) {
                 typedArray.getDimensionPixelSize(
-                    R.styleable.MultiScrollSpinner_ms_textSize,
+                    LibraryR.styleable.MultiScrollSpinner_ms_textSize,
                     0
                 ).toFloat()
             } else null
-            textColor = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_textColor)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_textColor, 0)
+            textColor = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_textColor)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_textColor, 0)
             } else null
-            hintText = typedArray.getString(R.styleable.MultiScrollSpinner_ms_hintText)
-            hintTextColor = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_hintTextColor)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_hintTextColor, 0)
+            hintText = typedArray.getString(LibraryR.styleable.MultiScrollSpinner_ms_hintText)
+            hintTextColor = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_hintTextColor)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_hintTextColor, 0)
             } else null
 
             // Item customization
-            itemTextSize = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_itemTextSize)) {
+            itemTextSize = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_itemTextSize)) {
                 typedArray.getDimensionPixelSize(
-                    R.styleable.MultiScrollSpinner_ms_itemTextSize,
+                    LibraryR.styleable.MultiScrollSpinner_ms_itemTextSize,
                     0
                 ).toFloat()
             } else null
-            itemTextColor = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_itemTextColor)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_itemTextColor, 0)
+            itemTextColor = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_itemTextColor)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_itemTextColor, 0)
             } else null
-            selectedItemBackground = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_selectedItemBackground)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_selectedItemBackground, 0)
+            selectedItemBackground = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_selectedItemBackground)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_selectedItemBackground, 0)
             } else null
-            selectedItemTextColor = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_selectedItemTextColor)) {
-                typedArray.getColor(R.styleable.MultiScrollSpinner_ms_selectedItemTextColor, 0)
+            selectedItemTextColor = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_selectedItemTextColor)) {
+                typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_selectedItemTextColor, 0)
             } else null
-            itemHeight = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_itemHeight)) {
-                typedArray.getDimensionPixelSize(R.styleable.MultiScrollSpinner_ms_itemHeight, 0)
+            itemHeight = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_itemHeight)) {
+                typedArray.getDimensionPixelSize(LibraryR.styleable.MultiScrollSpinner_ms_itemHeight, 0)
             } else null
 
             // Popup customization
-            maxDropdownHeight = if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_maxDropdownHeight)) {
-                typedArray.getDimensionPixelSize(R.styleable.MultiScrollSpinner_ms_maxDropdownHeight, 0)
+            maxDropdownHeight = if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_maxDropdownHeight)) {
+                typedArray.getDimensionPixelSize(LibraryR.styleable.MultiScrollSpinner_ms_maxDropdownHeight, 0)
             } else null
-            popupBackground = typedArray.getDrawable(R.styleable.MultiScrollSpinner_ms_popupBackground)
-                ?: if (typedArray.hasValue(R.styleable.MultiScrollSpinner_ms_popupBackground)) {
-                    typedArray.getColor(R.styleable.MultiScrollSpinner_ms_popupBackground, 0)
+            popupBackground = typedArray.getDrawable(LibraryR.styleable.MultiScrollSpinner_ms_popupBackground)
+                ?: if (typedArray.hasValue(LibraryR.styleable.MultiScrollSpinner_ms_popupBackground)) {
+                    typedArray.getColor(LibraryR.styleable.MultiScrollSpinner_ms_popupBackground, 0)
                 } else null
+            
+            // Toast customization
+            showToast = typedArray.getBoolean(LibraryR.styleable.MultiScrollSpinner_ms_showToast, false)
         } finally {
             typedArray.recycle()
         }
@@ -155,11 +162,11 @@ class MultiScrollSpinner @JvmOverloads constructor(
 
     private fun initView() {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.layout_multiscroll_spinner, this, true)
+        val view = inflater.inflate(LibraryR.layout.layout_multiscroll_spinner, this, true)
         
-        selectedText = view.findViewById(R.id.selectedText)
-        selectedTextScrollView = view.findViewById(R.id.selectedTextScrollView)
-        dropdownArrow = view.findViewById(R.id.dropdownArrow)
+        selectedText = view.findViewById(LibraryR.id.selectedText)
+        selectedTextScrollView = view.findViewById(LibraryR.id.selectedTextScrollView)
+        dropdownArrow = view.findViewById(LibraryR.id.dropdownArrow)
 
         // Apply arrow customization
         applyArrowCustomization()
@@ -229,6 +236,16 @@ class MultiScrollSpinner @JvmOverloads constructor(
         if (position >= 0 && position < items.size) {
             selectedPosition = position
             updateSelectedText()
+            
+            // Show toast if enabled
+            if (showToast) {
+                Toast.makeText(
+                    context,
+                    "Selected: ${items[position]} (Position: $position)",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            
             onItemSelectedListener?.invoke(position, items[position])
         }
     }
@@ -261,6 +278,22 @@ class MultiScrollSpinner @JvmOverloads constructor(
     fun setOnItemSelectedListener(listener: (Int, String) -> Unit) {
         this.onItemSelectedListener = listener
     }
+
+    /**
+     * Sets whether to show a toast message when an item is selected.
+     *
+     * @param show true to show toast, false to hide it (default: false)
+     */
+    fun setShowToast(show: Boolean) {
+        this.showToast = show
+    }
+
+    /**
+     * Gets whether toast is enabled for item selection.
+     *
+     * @return true if toast is enabled, false otherwise
+     */
+    fun isShowToastEnabled(): Boolean = showToast
 
     // Customization setters
 

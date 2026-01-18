@@ -8,6 +8,7 @@ import android.widget.HorizontalScrollView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tatav.multiscrollspinner.library.R as LibraryR
 
 /**
  * RecyclerView adapter for displaying spinner items with horizontal scrolling capability.
@@ -27,8 +28,8 @@ class MultiScrollSpinnerAdapter(
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.itemText)
-        val horizontalScrollView: HorizontalScrollView = itemView.findViewById(R.id.horizontalScrollView)
+        val textView: TextView = itemView.findViewById(LibraryR.id.itemText)
+        val horizontalScrollView: HorizontalScrollView = itemView.findViewById(LibraryR.id.horizontalScrollView)
 
         init {
             itemView.isClickable = true
@@ -41,7 +42,7 @@ class MultiScrollSpinnerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_multiscroll_spinner, parent, false)
+            .inflate(LibraryR.layout.item_multiscroll_spinner, parent, false)
         return ItemViewHolder(view)
     }
 

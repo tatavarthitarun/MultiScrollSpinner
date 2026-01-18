@@ -43,10 +43,66 @@ dependencies {
 }
 ```
 
-**Note:** 
+**Important:** 
+- Make sure you have created and pushed a Git tag (e.g., `v0.0.1`) to GitHub
+- JitPack needs to build the library first - visit https://jitpack.io/#tatavarthitarun/MultiScrollSpinner to trigger the build
 - Replace `tatavarthitarun` with your GitHub username
-- Replace `v0.0.1` with the release tag you want to use (e.g., `v1.0.0`)
-- You can also use commit SHA or branch name: `main-SNAPSHOT` for latest from main branch
+- Replace `v0.0.1` with the release tag you want to use
+
+**Troubleshooting "Failed to resolve" error:**
+
+1. **If tag doesn't exist, create and push it:**
+   ```bash
+   git tag -a v0.0.1 -m "Release v0.0.1"
+   git push origin v0.0.1
+   ```
+
+   **If tag already exists locally:**
+   ```bash
+   # Just push the existing tag
+   git push origin v0.0.1
+   
+   # Or if you need to update it:
+   git tag -d v0.0.1                    # Delete local tag
+   git push origin :refs/tags/v0.0.1   # Delete remote tag
+   git tag -a v0.0.1 -m "Release v0.0.1"  # Create new tag
+   git push origin v0.0.1              # Push new tag
+   ```
+
+2. **Verify tag exists on GitHub:**
+   Visit: `https://github.com/tatavarthitarun/MultiScrollSpinner/tags`
+   The tag `v0.0.1` should be visible
+
+3. **Trigger JitPack build:**
+   - Visit: `https://jitpack.io/#tatavarthitarun/MultiScrollSpinner`
+   - Click "Get it" or "Look up" next to `v0.0.1`
+   - Wait for build to complete (first build: 5-10 minutes)
+   - Look for green checkmark ✓ when build succeeds
+
+4. **Verify JitPack repository in your sample project:**
+   Make sure `settings.gradle.kts` has:
+   ```kotlin
+   maven { url = uri("https://jitpack.io") }
+   ```
+
+5. **If build fails on JitPack:**
+   - **Check the build log:** Click on the version on JitPack website to see detailed error
+   - **Try removing jitpack.yml:** Delete the file, commit, and recreate the tag - JitPack auto-detection often works better
+   - **Common fixes:**
+     - Ensure Gradle wrapper version in `gradle-wrapper.properties` is compatible (currently 8.13)
+     - Verify `:library` module is correctly configured
+     - Check that all dependencies in `libs.versions.toml` are valid
+     - Make sure repository is public (JitPack only works with public repos)
+
+6. **Alternative: Use commit SHA for testing:**
+   ```kotlin
+   // Get commit SHA: git rev-parse HEAD
+   implementation("com.github.tatavarthitarun:MultiScrollSpinner:COMMIT_SHA")
+   ```
+
+6. **Check repository visibility:**
+   - Repository must be **public** on GitHub
+   - Private repos require JitPack Pro
 
 ## Usage
 

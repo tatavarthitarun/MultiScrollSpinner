@@ -1,5 +1,7 @@
 # Multi-Scroll Spinner
 
+[![JitPack](https://jitpack.io/v/tatavarthitarun/MultiScrollSpinner.svg)](https://jitpack.io/#tatavarthitarun/MultiScrollSpinner)
+
 A custom Android spinner (dropdown list) widget that supports both horizontal scrolling for long item text and vertical scrolling for multiple items. Built with Kotlin and Material Design components.
 
 ## Features
@@ -20,7 +22,40 @@ A custom Android spinner (dropdown list) widget that supports both horizontal sc
 
 ## Installation
 
-### Option 1: Use as Library Module (Recommended)
+### Option 1: JitPack (Easiest - Recommended)
+
+Add JitPack repository to your project's `settings.gradle.kts` (or `settings.gradle`):
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+Then add the dependency in your app's `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("com.github.tatavarthitarun:MultiScrollSpinner:1.0.0")
+    // Or use the latest commit:
+    // implementation("com.github.tatavarthitarun:MultiScrollSpinner:main-SNAPSHOT")
+}
+```
+
+**Note:** 
+- Replace `tatavarthitarun` with your GitHub username
+- Replace `1.0.0` with the release tag you want to use (e.g., `v1.0.0` or just `1.0.0`)
+- You can also use commit SHA or branch name: `main-SNAPSHOT` for latest from main branch
+
+**JitPack Badge:**
+[![JitPack](https://jitpack.io/v/tatavarthitarun/MultiScrollSpinner.svg)](https://jitpack.io/#tatavarthitarun/MultiScrollSpinner)
+
+### Option 2: Use as Library Module
 
 1. **Clone or download the repository:**
 ```bash
@@ -43,7 +78,7 @@ dependencies {
 }
 ```
 
-### Option 2: Copy Source Files
+### Option 3: Copy Source Files
 
 Copy the following files to your project:
 
@@ -320,6 +355,46 @@ holder.itemView.setBackgroundColor(
 ## Screenshots
 
 *Add screenshots of your spinner in action here*
+
+## Publishing to JitPack
+
+To publish a new version of the library to JitPack:
+
+1. **Update the version** in `library/build.gradle.kts`:
+   ```kotlin
+   version = "1.0.0"  // Update this
+   ```
+
+2. **Create a Git tag** for the version:
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   git push origin v1.0.0
+   ```
+
+3. **Or create a GitHub Release**:
+   - Go to your repository on GitHub
+   - Click "Releases" → "Create a new release"
+   - Choose a tag (create new tag like `v1.0.0`)
+   - Add release notes
+   - Click "Publish release"
+
+4. **JitPack will automatically build** your library when:
+   - A new tag is pushed
+   - A new release is created
+   - You visit https://jitpack.io/#YourUsername/MultiScrollSpinner
+
+5. **Users can then use**:
+   ```kotlin
+   implementation("com.github.YourUsername:MultiScrollSpinner:v1.0.0")
+   ```
+
+**Important Notes:**
+- Replace `YourUsername` with your actual GitHub username in:
+  - `library/build.gradle.kts` (groupId)
+  - `jitpack.yml` (if needed)
+  - README examples
+- The first build on JitPack may take 5-10 minutes. Subsequent builds are usually faster.
+- See [PUBLISHING.md](PUBLISHING.md) for detailed publishing instructions.
 
 ## Contributing
 

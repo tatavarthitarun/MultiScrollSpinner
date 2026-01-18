@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tatav.multiscrollspinner"
+    namespace = "com.tatav.multiscrollspinner.library"
     compileSdk {
         version = release(36)
     }
